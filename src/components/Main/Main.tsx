@@ -2,6 +2,7 @@ import { Component } from 'react';
 import CardList, { Item } from './CardList/CardList';
 import Spinner from './Spinner/Spinner';
 import './Main.css';
+import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.tsx';
 
 interface MainState {
   items: Item[]; //todo
@@ -65,7 +66,9 @@ class Main extends Component {
 
     return (
       <main className="main">
-        <CardList items={items} />
+        <ErrorBoundary>
+          <CardList items={items} />
+        </ErrorBoundary>
       </main>
     );
   }

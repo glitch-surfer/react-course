@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import Card from './Card/Card';
 import './CardList.css';
+import ErrorButton from './ErrorButton/ErrorButton.tsx';
 
 export interface Item {
   name: string;
@@ -34,6 +35,7 @@ class CardList extends Component<CardListProps> {
         {items?.length
           ? items.map((item) => <Card key={item.url} item={item} />)
           : 'No data'}
+        <ErrorButton />
       </div>
     );
   }
