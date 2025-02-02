@@ -13,8 +13,13 @@ class Card extends Component<CardProps> {
     return (
       <div className="card">
         <h3>Name: {item.name ?? 'Unknown'}</h3>
-        <p>Type: {item.astronomicalObjectType ?? 'Unknown'}</p>
-        <p>Location: {item.location?.name ?? 'Unknown'}</p>
+        <p>Skin Color: {item.skin_color ?? 'Unknown'}</p>
+        <p>
+          Eye Color:{' '}
+          <span style={{ color: item.eye_color }}>
+            {item.eye_color ?? 'Unknown'}
+          </span>
+        </p>
       </div>
     );
   }

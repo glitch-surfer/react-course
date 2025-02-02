@@ -38,15 +38,13 @@ class Main extends Component {
   fetchData = async (searchTerm: string) => {
     this.setState({ isLoading: true, error: null });
     try {
-      // Replace with your API
       const response = await fetch(
-        `https://stapi.co/api/v2/rest/astronomicalObject/search/`
+        `https://swapi.dev/api/people/?search=${searchTerm}`
       );
-      console.log(searchTerm);
 
       if (!response.ok) throw new Error('Failed to fetch data');
       const data = await response.json();
-      this.setState({ items: data.astronomicalObjects });
+      this.setState({ items: data.results ?? [] });
     } catch (err) {
       this.setState({ error: (err as Error).message });
     } finally {

@@ -3,13 +3,22 @@ import Card from './Card/Card';
 import './CardList.css';
 
 export interface Item {
-  uid: string;
   name: string;
-  astronomicalObjectType: string;
-  location: {
-    uid: string;
-    name: string;
-  };
+  height: string;
+  mass: string;
+  hair_color: string;
+  skin_color: string;
+  eye_color: string;
+  birth_year: string;
+  gender: string;
+  homeworld: string;
+  films: string[];
+  species: [];
+  vehicles: string[];
+  starships: string[];
+  created: string;
+  edited: string;
+  url: string;
 }
 
 interface CardListProps {
@@ -23,7 +32,7 @@ class CardList extends Component<CardListProps> {
     return (
       <div className="card-list">
         {items.map((item) => (
-          <Card key={item.uid} item={item} />
+          <Card key={item.url} item={item} />
         ))}
       </div>
     );
