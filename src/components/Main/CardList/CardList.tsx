@@ -31,9 +31,9 @@ class CardList extends Component<CardListProps> {
 
     return (
       <div className="card-list">
-        {items.map((item) => (
-          <Card key={item.url} item={item} />
-        ))}
+        {items?.length
+          ? items.map((item) => <Card key={item.url} item={item} />)
+          : 'No data'}
       </div>
     );
   }
