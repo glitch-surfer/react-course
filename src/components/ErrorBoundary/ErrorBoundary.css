@@ -1,0 +1,32 @@
+.error-boundary {
+    text-align: center;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ff6b6b;
+    border-radius: 4px;
+    background-color: #fff5f5;
+}
+
+.error-boundary h2 {
+    color: #e03131;
+    margin-bottom: 15px;
+}
+
+.error-boundary p {
+    color: #495057;
+    margin-bottom: 20px;
+}
+
+.reload-button {
+    padding: 10px 20px;
+    background-color: #4dabf7;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.reload-button:hover {
+    background-color: #339af0;
+}
