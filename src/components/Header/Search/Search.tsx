@@ -1,30 +1,19 @@
-import { Component, MouseEvent, ChangeEvent } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Search.css';
 
-interface SearchProps {
-  searchTerm: string;
-}
+export const Search = () => {
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-class Search extends Component {
-  state: SearchProps;
-
-  constructor(props: Record<string, unknown>) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-    };
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     const savedSearch = localStorage.getItem('searchTerm');
     if (savedSearch) {
-      this.setState({ searchTerm: savedSearch });
+      setSearchTerm(savedSearch);
     }
-  }
+  }, []);
 
-  handleOnClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const processedTerm = this.state.searchTerm.trim();
+    const processedTerm = searchTerm.trim();
     localStorage.setItem('searchTerm', processedTerm);
 
     const searchEvent = new CustomEvent('onSearch', {
@@ -33,23 +22,19 @@ class Search extends Component {
     window.dispatchEvent(searchEvent);
   };
 
-  handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: e.target.value });
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
-  render() {
-    return (
-      <div>
-        <input
-          type="text"
-          value={this.state.searchTerm}
-          onChange={this.handleOnChange}
-          placeholder="Search..."
-        />
-        <button onClick={this.handleOnClick}>Search</button>;
-      </div>
-    );
-  }
-}
-
-export default Search;
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleOnChange}
+        placeholder="Search..."
+      />
+      <button onClick={handleOnClick}>Search</button>
+    </div>
+  );
+};

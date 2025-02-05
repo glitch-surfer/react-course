@@ -1,77 +1,57 @@
-import { Component } from 'react';
-import CardList, { Item } from './CardList/CardList';
-import Spinner from './Spinner/Spinner';
+import { useEffect, useState } from 'react';
+import { CardList, Item } from './CardList/CardList';
+import { Spinner } from './Spinner/Spinner';
 import './Main.css';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.tsx';
 
-interface MainState {
-  items: Item[]; //todo
-  isLoading: boolean;
-  error: string | null;
-}
+export const Main = () => {
+  const [items, setItems] = useState<Item[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
-class Main extends Component {
-  state: MainState;
+  useEffect(() => {
+    const fetchData = async (searchTerm: string) => {
+      setIsLoading(true);
 
-  constructor(props: Record<string, unknown>) {
-    super(props);
-    this.state = {
-      items: [],
-      isLoading: false,
-      error: null,
+      try {
+        const response = await fetch(
+          `https://swapi.dev/api/people/?search=${searchTerm}`
+        );
+
+        if (!response.ok) throw new Error('Failed to fetch data');
+        const data = await response.json();
+        setItems(data?.results ?? []);
+      } catch (err) {
+        setError((err as Error).message);
+      } finally {
+        setIsLoading(false);
+      }
     };
-  }
 
-  componentDidMount() {
-    window.addEventListener('onSearch', this.handleSearch);
+    const fetchDataFromCustomEvent = (event: Event) =>
+      fetchData((event as CustomEvent).detail);
+
+    window.addEventListener('onSearch', fetchDataFromCustomEvent);
     const savedSearch = localStorage.getItem('searchTerm');
-    this.fetchData(savedSearch || '');
+    fetchData(savedSearch || '');
+
+    return () =>
+      window.removeEventListener('onSearch', fetchDataFromCustomEvent);
+  }, []);
+
+  if (error) {
+    return <div className="error">Error: {error}</div>;
   }
 
-  componentWillUnmount() {
-    window.removeEventListener('onSearch', this.handleSearch);
+  if (isLoading) {
+    return <Spinner />;
   }
 
-  handleSearch = (event: Event) => {
-    this.fetchData((event as CustomEvent).detail);
-  };
-
-  fetchData = async (searchTerm: string) => {
-    this.setState({ isLoading: true, error: null });
-    try {
-      const response = await fetch(
-        `https://swapi.dev/api/people/?search=${searchTerm}`
-      );
-
-      if (!response.ok) throw new Error('Failed to fetch data');
-      const data = await response.json();
-      this.setState({ items: data.results ?? [] });
-    } catch (err) {
-      this.setState({ error: (err as Error).message });
-    } finally {
-      this.setState({ isLoading: false });
-    }
-  };
-
-  render() {
-    const { items, isLoading, error } = this.state;
-
-    if (error) {
-      return <div className="error">Error: {error}</div>;
-    }
-
-    if (isLoading) {
-      return <Spinner />;
-    }
-
-    return (
-      <main className="main">
-        <ErrorBoundary>
-          <CardList items={items} />
-        </ErrorBoundary>
-      </main>
-    );
-  }
-}
-
-export default Main;
+  return (
+    <main className="main">
+      <ErrorBoundary>
+        <CardList items={items} />
+      </ErrorBoundary>
+    </main>
+  );
+};
