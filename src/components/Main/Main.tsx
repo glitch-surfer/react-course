@@ -3,8 +3,11 @@ import { CardList, Item } from './CardList/CardList';
 import { Spinner } from './Spinner/Spinner';
 import './Main.css';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.tsx';
+import { useLocalStorage } from '../../hooks/useLocalStorage.ts';
+import { SEARCH_TERM_KEY } from '../../consts/consts.ts';
 
 export const Main = () => {
+  const [searchTerm] = useLocalStorage(SEARCH_TERM_KEY);
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -32,8 +35,7 @@ export const Main = () => {
       fetchData((event as CustomEvent).detail);
 
     window.addEventListener('onSearch', fetchDataFromCustomEvent);
-    const savedSearch = localStorage.getItem('searchTerm');
-    fetchData(savedSearch || '');
+    fetchData(searchTerm);
 
     return () =>
       window.removeEventListener('onSearch', fetchDataFromCustomEvent);

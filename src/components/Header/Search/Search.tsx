@@ -1,20 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './Search.css';
+import { useLocalStorage } from '../../../hooks/useLocalStorage.ts';
+import { SEARCH_TERM_KEY } from '../../../consts/consts.ts';
 
 export const Search = () => {
-  const [searchTerm, setSearchTerm] = useState<string>('');
-
-  useEffect(() => {
-    const savedSearch = localStorage.getItem('searchTerm');
-    if (savedSearch) {
-      setSearchTerm(savedSearch);
-    }
-  }, []);
+  const [searchTerm, setSearchTerm] = useLocalStorage(SEARCH_TERM_KEY);
 
   const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const processedTerm = searchTerm.trim();
-    localStorage.setItem('searchTerm', processedTerm);
 
     const searchEvent = new CustomEvent('onSearch', {
       detail: processedTerm,
