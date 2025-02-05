@@ -4,13 +4,21 @@ import { Spinner } from './Spinner/Spinner';
 import './Main.css';
 import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.tsx';
 import { useLocalStorage } from '../../hooks/useLocalStorage.ts';
-import { SEARCH_TERM_KEY } from '../../consts/consts.ts';
+import { BASE_URL, SEARCH_TERM_KEY } from '../../consts/consts.ts';
+import { Pagination } from './Pagination/Pagination.tsx';
+import { useSearchParams } from 'react-router-dom';
+import { Details } from './Details/Details.tsx';
 
 export const Main = () => {
   const [searchTerm] = useLocalStorage(SEARCH_TERM_KEY);
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string>('');
+  const [detailsItemUrl, setDetailsItemUrl] = useState<string>('');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [currentPage, setCurrentPage] = useState(
+    parseInt(searchParams.get('page') || '1')
+  );
 
   useEffect(() => {
     const fetchData = async (searchTerm: string) => {
@@ -18,7 +26,7 @@ export const Main = () => {
 
       try {
         const response = await fetch(
-          `https://swapi.dev/api/people/?search=${searchTerm}`
+          `${BASE_URL}/?search=${searchTerm}&page=${currentPage}`
         );
 
         if (!response.ok) throw new Error('Failed to fetch data');
@@ -39,7 +47,20 @@ export const Main = () => {
 
     return () =>
       window.removeEventListener('onSearch', fetchDataFromCustomEvent);
-  }, []);
+  }, [currentPage]);
+
+  const handleItemClick = (url: string) => {
+    setDetailsItemUrl(url);
+    setSearchParams({
+      page: currentPage.toString(),
+      details: (url.split('/').at(-2) ?? '').toString(),
+    });
+  };
+
+  const handleCloseDetails = () => {
+    setDetailsItemUrl('');
+    setSearchParams({ page: currentPage.toString() });
+  };
 
   if (error) {
     return <div className="error">Error: {error}</div>;
@@ -52,7 +73,27 @@ export const Main = () => {
   return (
     <main className="main">
       <ErrorBoundary>
-        <CardList items={items} />
+        <CardList items={items} handleCardClick={handleItemClick} />
+        <Pagination
+          currentPage={currentPage}
+          onPageChange={(page) => {
+            setSearchParams({ page: page.toString() });
+            setCurrentPage(page);
+          }}
+        />
+        {detailsItemUrl && (
+          <div
+            style={{ width: '300px', padding: '20px', background: '#f9f9f9' }}
+          >
+            <button
+              onClick={handleCloseDetails}
+              style={{ marginBottom: '10px' }}
+            >
+              Close
+            </button>
+            <Details url={detailsItemUrl} />
+          </div>
+        )}
       </ErrorBoundary>
     </main>
   );

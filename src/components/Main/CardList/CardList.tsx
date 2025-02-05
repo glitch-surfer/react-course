@@ -23,14 +23,21 @@ export interface Item {
 
 interface CardListProps {
   items: Item[];
+  handleCardClick: (url: string) => void;
 }
 
-export const CardList = ({ items }: CardListProps) => {
+export const CardList = ({ items, handleCardClick }: CardListProps) => {
   return (
     <>
       <div className="card-list">
         {items?.length
-          ? items.map((item) => <Card key={item.url} item={item} />)
+          ? items.map((item) => (
+              <Card
+                key={item.url}
+                item={item}
+                handleClick={() => handleCardClick(item.url)}
+              />
+            ))
           : 'No data'}
       </div>
       <ErrorButton />

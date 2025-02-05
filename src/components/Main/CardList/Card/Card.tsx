@@ -3,11 +3,12 @@ import './Card.css';
 
 interface CardProps {
   item: Item;
+  handleClick: () => void;
 }
 
-export const Card = ({ item }: CardProps) => {
+export const Card = ({ item, handleClick }: CardProps) => {
   return (
-    <div className="card">
+    <div className="card" onClick={handleClick}>
       <h3>Name: {item.name ?? 'Unknown'}</h3>
       <p>Skin Color: {item.skin_color ?? 'Unknown'}</p>
       <p>
