@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Spinner } from '../Spinner/Spinner.tsx';
 import { Item } from '../CardList/CardList.tsx';
+import './Details.css';
 
 interface DetailsProps {
   url: string;
@@ -36,18 +37,21 @@ export const Details: React.FC<DetailsProps> = ({ url, handleClose }) => {
   if (isLoading) return <Spinner />;
 
   return (
-    <div style={{ width: '400px', padding: '20px', border: '2px solid black' }}>
-      <div>
-        <h2>{itemDetails?.name} Details</h2>
-        <p>Gender: {itemDetails?.gender}</p>
-        <p>Height: {itemDetails?.height}</p>
-        <p>Mass: {itemDetails?.mass}</p>
-        <p>Skin Color: {itemDetails?.skin_color}</p>
-      </div>
+    <>
+      <div className="overlay" onClick={handleClose}></div>
+      <div className="details">
+        <div>
+          <h2>{itemDetails?.name} Details</h2>
+          <p>Gender: {itemDetails?.gender}</p>
+          <p>Height: {itemDetails?.height}</p>
+          <p>Mass: {itemDetails?.mass}</p>
+          <p>Skin Color: {itemDetails?.skin_color}</p>
+        </div>
 
-      <button onClick={handleClose} style={{ marginBottom: '10px' }}>
-        Close
-      </button>
-    </div>
+        <button onClick={handleClose} style={{ marginBottom: '10px' }}>
+          Close
+        </button>
+      </div>
+    </>
   );
 };

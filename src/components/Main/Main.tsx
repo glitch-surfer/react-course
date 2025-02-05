@@ -83,15 +83,17 @@ export const Main = () => {
         <div className="container">
           <div>
             <CardList items={items} handleCardClick={handleItemClick} />
-            <Pagination
-              currentPage={currentPage}
-              onPageChange={(page) => {
-                setSearchParams({ page: page.toString() });
-                setCurrentPage(page);
-                setDetailsItemUrl('');
-              }}
-              isLastPage={isLastPage}
-            />
+            {items.length && (
+              <Pagination
+                currentPage={currentPage}
+                onPageChange={(page) => {
+                  setSearchParams({ page: page.toString() });
+                  setCurrentPage(page);
+                  setDetailsItemUrl('');
+                }}
+                isLastPage={isLastPage}
+              />
+            )}
           </div>
           {detailsItemUrl && (
             <Details url={detailsItemUrl} handleClose={handleCloseDetails} />
