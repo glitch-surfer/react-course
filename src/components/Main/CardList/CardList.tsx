@@ -27,11 +27,13 @@ interface CardListProps {
 
 export const CardList = ({ items }: CardListProps) => {
   return (
-    <div className="card-list">
-      {items?.length
-        ? items.map((item) => <Card key={item.url} item={item} />)
-        : 'No data'}
+    <>
+      <div className="card-list">
+        {items?.length
+          ? items.map((item) => <Card key={item.url} item={item} />)
+          : 'No data'}
+      </div>
       <ErrorButton />
-    </div>
+    </>
   );
 };
