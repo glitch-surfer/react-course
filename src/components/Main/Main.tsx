@@ -9,6 +9,8 @@ import { Pagination } from './Pagination/Pagination.tsx';
 import { useSearchParams } from 'react-router-dom';
 import { Details } from './Details/Details.tsx';
 
+const DEFAULT_LIMIT = 10;
+
 export const Main = () => {
   const [searchTerm] = useLocalStorage(SEARCH_TERM_KEY);
   const [items, setItems] = useState<Item[]>([]);
@@ -19,19 +21,24 @@ export const Main = () => {
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams.get('page') || '1')
   );
+  const [isLastPage, setIsLastPage] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async (searchTerm: string) => {
       setIsLoading(true);
 
+      const page = searchTerm ? '1' : currentPage;
+      setCurrentPage(+page);
+      setSearchParams({ page: page.toString() });
       try {
         const response = await fetch(
-          `${BASE_URL}/?search=${searchTerm}&page=${currentPage}`
+          `${BASE_URL}/?search=${searchTerm}&page=${page}`
         );
 
         if (!response.ok) throw new Error('Failed to fetch data');
         const data = await response.json();
         setItems(data?.results ?? []);
+        setIsLastPage(data.count < DEFAULT_LIMIT * currentPage);
       } catch (err) {
         setError((err as Error).message);
       } finally {
@@ -73,27 +80,23 @@ export const Main = () => {
   return (
     <main className="main">
       <ErrorBoundary>
-        <CardList items={items} handleCardClick={handleItemClick} />
-        <Pagination
-          currentPage={currentPage}
-          onPageChange={(page) => {
-            setSearchParams({ page: page.toString() });
-            setCurrentPage(page);
-          }}
-        />
-        {detailsItemUrl && (
-          <div
-            style={{ width: '300px', padding: '20px', background: '#f9f9f9' }}
-          >
-            <button
-              onClick={handleCloseDetails}
-              style={{ marginBottom: '10px' }}
-            >
-              Close
-            </button>
-            <Details url={detailsItemUrl} />
+        <div className="container">
+          <div>
+            <CardList items={items} handleCardClick={handleItemClick} />
+            <Pagination
+              currentPage={currentPage}
+              onPageChange={(page) => {
+                setSearchParams({ page: page.toString() });
+                setCurrentPage(page);
+                setDetailsItemUrl('');
+              }}
+              isLastPage={isLastPage}
+            />
           </div>
-        )}
+          {detailsItemUrl && (
+            <Details url={detailsItemUrl} handleClose={handleCloseDetails} />
+          )}
+        </div>
       </ErrorBoundary>
     </main>
   );

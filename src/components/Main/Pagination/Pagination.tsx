@@ -4,11 +4,13 @@ import './Pagination.css';
 interface PaginationProps {
   currentPage: number;
   onPageChange: (page: number) => void;
+  isLastPage: boolean;
 }
 
 export const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   onPageChange,
+  isLastPage,
 }) => {
   return (
     <div className="pagination">
@@ -19,7 +21,12 @@ export const Pagination: React.FC<PaginationProps> = ({
         Previous
       </button>
       <span>Page: {currentPage}</span>
-      <button onClick={() => onPageChange(currentPage + 1)}>Next</button>
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        disabled={isLastPage}
+      >
+        Next
+      </button>
     </div>
   );
 };

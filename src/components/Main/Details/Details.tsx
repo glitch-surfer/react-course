@@ -4,9 +4,10 @@ import { Item } from '../CardList/CardList.tsx';
 
 interface DetailsProps {
   url: string;
+  handleClose: () => void;
 }
 
-export const Details: React.FC<DetailsProps> = ({ url }) => {
+export const Details: React.FC<DetailsProps> = ({ url, handleClose }) => {
   const [itemDetails, setItemDetails] = useState<Item | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>('');
@@ -35,12 +36,18 @@ export const Details: React.FC<DetailsProps> = ({ url }) => {
   if (isLoading) return <Spinner />;
 
   return (
-    <div>
+    <div style={{ width: '400px', padding: '20px', border: '2px solid black' }}>
       <div>
-        <h2>Item Details</h2>
-        <p>ID: {itemDetails?.birth_year}</p>
-        <p>{itemDetails?.films}</p>
+        <h2>{itemDetails?.name} Details</h2>
+        <p>Gender: {itemDetails?.gender}</p>
+        <p>Height: {itemDetails?.height}</p>
+        <p>Mass: {itemDetails?.mass}</p>
+        <p>Skin Color: {itemDetails?.skin_color}</p>
       </div>
+
+      <button onClick={handleClose} style={{ marginBottom: '10px' }}>
+        Close
+      </button>
     </div>
   );
 };
