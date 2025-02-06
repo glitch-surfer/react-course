@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CardList, Item } from './CardList/CardList';
 import { Spinner } from './Spinner/Spinner';
 import './Main.css';
@@ -21,6 +21,8 @@ export const Main = () => {
   );
   const [isLastPage, setIsLastPage] = useState<boolean>(false);
   const navigate = useNavigate();
+
+  const detailsRef = useRef<HTMLDivElement | null>(null);
 
   const detailsId = searchParams.get('details');
 
@@ -57,6 +59,27 @@ export const Main = () => {
       window.removeEventListener('onSearch', fetchDataFromCustomEvent);
   }, [currentPage]);
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        detailsRef.current &&
+        !detailsRef.current.contains(event.target as Node)
+      ) {
+        handleCloseDetails();
+      }
+    };
+
+    if (detailsId) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [detailsId]);
+
   const handleItemClick = (url: string) => {
     const detailsId = (url.split('/').at(-2) ?? '').toString();
     navigate(`?page=${currentPage}&details=${detailsId}`);
@@ -91,7 +114,11 @@ export const Main = () => {
               />
             )}
           </div>
-          {detailsId && <Outlet context={{ detailsId, handleCloseDetails }} />}
+          {detailsId && (
+            <div ref={detailsRef}>
+              <Outlet context={{ detailsId, handleCloseDetails }} />
+            </div>
+          )}
         </div>
       </ErrorBoundary>
     </main>
