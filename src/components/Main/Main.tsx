@@ -6,8 +6,7 @@ import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.tsx';
 import { useLocalStorage } from '../../hooks/useLocalStorage.ts';
 import { BASE_URL, SEARCH_TERM_KEY } from '../../consts/consts.ts';
 import { Pagination } from './Pagination/Pagination.tsx';
-import { useSearchParams } from 'react-router-dom';
-import { Details } from './Details/Details.tsx';
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 const DEFAULT_LIMIT = 10;
 
@@ -16,12 +15,14 @@ export const Main = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>('');
-  const [detailsItemUrl, setDetailsItemUrl] = useState<string>('');
   const [searchParams, setSearchParams] = useSearchParams();
   const [currentPage, setCurrentPage] = useState(
     parseInt(searchParams.get('page') || '1')
   );
   const [isLastPage, setIsLastPage] = useState<boolean>(false);
+  const navigate = useNavigate();
+
+  const detailsId = searchParams.get('details');
 
   useEffect(() => {
     const fetchData = async (searchTerm: string) => {
@@ -57,16 +58,12 @@ export const Main = () => {
   }, [currentPage]);
 
   const handleItemClick = (url: string) => {
-    setDetailsItemUrl(url);
-    setSearchParams({
-      page: currentPage.toString(),
-      details: (url.split('/').at(-2) ?? '').toString(),
-    });
+    const detailsId = (url.split('/').at(-2) ?? '').toString();
+    navigate(`?page=${currentPage}&details=${detailsId}`);
   };
 
   const handleCloseDetails = () => {
-    setDetailsItemUrl('');
-    setSearchParams({ page: currentPage.toString() });
+    navigate(`?page=${currentPage}`);
   };
 
   if (error) {
@@ -89,15 +86,12 @@ export const Main = () => {
                 onPageChange={(page) => {
                   setSearchParams({ page: page.toString() });
                   setCurrentPage(page);
-                  setDetailsItemUrl('');
                 }}
                 isLastPage={isLastPage}
               />
             )}
           </div>
-          {detailsItemUrl && (
-            <Details url={detailsItemUrl} handleClose={handleCloseDetails} />
-          )}
+          {detailsId && <Outlet context={{ detailsId, handleCloseDetails }} />}
         </div>
       </ErrorBoundary>
     </main>
