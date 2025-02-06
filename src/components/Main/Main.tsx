@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CardList, Item } from './CardList/CardList';
 import { Spinner } from './Spinner/Spinner';
 import './Main.css';
-import ErrorBoundary from '../ErrorBoundary/ErrorBoundary.tsx';
+import { ErrorBoundary } from '../ErrorBoundary/ErrorBoundary.tsx';
 import { useLocalStorage } from '../../hooks/useLocalStorage.ts';
 import { BASE_URL, SEARCH_TERM_KEY } from '../../consts/consts.ts';
 import { Pagination } from './Pagination/Pagination.tsx';

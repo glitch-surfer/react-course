@@ -14,6 +14,11 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
+    "types": ["@vitest/browser/providers/playwright"],
+
+
+    "esModuleInterop": true, // Required by ts-jest for handling imports
+    "allowSyntheticDefaultImports": true,
 
     /* Linting */
     "strict": true,
