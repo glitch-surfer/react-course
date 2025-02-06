@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 import './App.css';
 import { Details } from './components/Main/Details/Details.tsx';
+import { NotFound } from './components/NotFound/NotFound.tsx';
 
 export const App = () => {
   return (
@@ -14,7 +15,7 @@ export const App = () => {
           <Route path="/" element={<Main />}>
             <Route path="" element={<Details />} />
           </Route>
-          <Route path="*" element={'NOT FOUND'} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>
     </div>
