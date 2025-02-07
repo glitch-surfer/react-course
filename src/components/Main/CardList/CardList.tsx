@@ -1,5 +1,4 @@
-import { Component } from 'react';
-import Card from './Card/Card';
+import { Card } from './Card/Card';
 import './CardList.css';
 import ErrorButton from './ErrorButton/ErrorButton.tsx';
 
@@ -24,21 +23,24 @@ export interface Item {
 
 interface CardListProps {
   items: Item[];
+  handleCardClick: (url: string) => void;
 }
 
-class CardList extends Component<CardListProps> {
-  render() {
-    const { items } = this.props;
-
-    return (
+export const CardList = ({ items, handleCardClick }: CardListProps) => {
+  return (
+    <>
       <div className="card-list">
         {items?.length
-          ? items.map((item) => <Card key={item.url} item={item} />)
+          ? items.map((item) => (
+              <Card
+                key={item.url}
+                item={item}
+                handleClick={() => handleCardClick(item.url)}
+              />
+            ))
           : 'No data'}
-        <ErrorButton />
       </div>
-    );
-  }
-}
-
-export default CardList;
+      <ErrorButton />
+    </>
+  );
+};

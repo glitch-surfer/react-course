@@ -1,9 +1,14 @@
 .main {
-  padding: 20px;
+    padding: 20px;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 1fr auto;
 }
 
 .error {
-  color: red;
-  text-align: center;
-  padding: 20px;
+    color: red;
+    text-align: center;
+    padding: 20px;
 }

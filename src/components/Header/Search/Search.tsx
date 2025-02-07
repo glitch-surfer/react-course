@@ -1,31 +1,14 @@
-import { Component, MouseEvent, ChangeEvent } from 'react';
+import React from 'react';
 import './Search.css';
+import { useLocalStorage } from '../../../hooks/useLocalStorage.ts';
+import { SEARCH_TERM_KEY } from '../../../consts/consts.ts';
 
-interface SearchProps {
-  searchTerm: string;
-}
+export const Search = () => {
+  const [searchTerm, setSearchTerm] = useLocalStorage(SEARCH_TERM_KEY);
 
-class Search extends Component {
-  state: SearchProps;
-
-  constructor(props: Record<string, unknown>) {
-    super(props);
-    this.state = {
-      searchTerm: '',
-    };
-  }
-
-  componentDidMount() {
-    const savedSearch = localStorage.getItem('searchTerm');
-    if (savedSearch) {
-      this.setState({ searchTerm: savedSearch });
-    }
-  }
-
-  handleOnClick = (e: MouseEvent<HTMLButtonElement>) => {
+  const handleOnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const processedTerm = this.state.searchTerm.trim();
-    localStorage.setItem('searchTerm', processedTerm);
+    const processedTerm = searchTerm.trim();
 
     const searchEvent = new CustomEvent('onSearch', {
       detail: processedTerm,
@@ -33,23 +16,19 @@ class Search extends Component {
     window.dispatchEvent(searchEvent);
   };
 
-  handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
-    this.setState({ searchTerm: e.target.value });
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
   };
 
-  render() {
-    return (
-      <div>
-        <input
-          type="text"
-          value={this.state.searchTerm}
-          onChange={this.handleOnChange}
-          placeholder="Search..."
-        />
-        <button onClick={this.handleOnClick}>Search</button>;
-      </div>
-    );
-  }
-}
-
-export default Search;
+  return (
+    <div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleOnChange}
+        placeholder="Search..."
+      />
+      <button onClick={handleOnClick}>Search</button>
+    </div>
+  );
+};
