@@ -1,5 +1,5 @@
 import './Spinner.css';
 
 export const Spinner = () => {
-  return <div className="spinner"></div>;
+  return <div role={'status'} className="spinner"></div>;
 };
